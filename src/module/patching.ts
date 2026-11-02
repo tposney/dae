@@ -12,10 +12,15 @@ export function initPatching() {
 
 export function setupPatching() {
   log("Patching ActiveEffect.isTemporary");
-  libWrapper.register("dae", "CONFIG.ActiveEffect.documentClass.prototype.isTemporary", isTemporary, "WRAPPER")
+  libWrapper.register("dae", "CONFIG.ActiveEffect.documentClass.prototype.isTemporary", isTemporary, "WRAPPER");
+  log("Patching ActiveEffect.isConcealed");
+  libWrapper.register("dae", "CONFIG.ActiveEffect.documentClass.prototype.isConcealed", isConcealed, "WRAPPER");
 };
 function isTemporary(this: ActiveEffect.Implementation, wrapped) {
   // if (this.parent instanceof CONFIG.Actor.documentClass && this.data.flags?.dae?.transfer) return false;
   this._prepareDuration();
-  return wrapped() || this.flags?.dae?.showIcon;
+  return wrapped() || this.flags?.dae?.showIcon === "always" || this.flags?.dae?.showIcon === true; // workaround for migration purposes
+}
+function isConcealed(this: ActiveEffect.Implementation, wrapped) {
+  return wrapped() || this.flags?.dae?.showIcon === "never";
 }
