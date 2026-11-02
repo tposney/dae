@@ -425,6 +425,12 @@ export class DAESystem {
     let result: any;
     const preSetupError = "MidiQOL or fromUuidSync used before setup complete";
     try {
+      if (sandbox.effect?.origin) {
+        let origin = fromUuidSync(sandbox.effect.origin);
+        if (!(origin instanceof Item) && (origin.parent instanceof Item)) origin = origin.parent;
+        else origin = undefined;
+        sandbox.origin = origin?.getRollData();
+      }
       const src = 'with (sandbox) { return ' + expression + '}';
       const evl = new Function('sandbox', src);
       sandbox = foundry.utils.mergeObject(sandbox, { Roll });
