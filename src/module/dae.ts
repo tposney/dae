@@ -1961,6 +1961,16 @@ export function daeInitActions() {
       if (actor) scheduleConditionalEffects(actor, {});
     }
   })
+
+  // Re-evaluate enable/disable conditions on combat start, turn/round changes and combat end
+  Hooks.on("updateCombat", (combat, update) => {
+    if (update.round === undefined && update.turn === undefined) return;
+    scheduleCombatConditionalEffects(combat);
+  });
+  Hooks.on("deleteCombat", (combat) => {
+    scheduleCombatConditionalEffects(combat);
+  });
+
   libWrapper.register("dae", "CONFIG.ActiveEffect.documentClass.prototype._preCreate", _preCreateActiveEffect, "MIXED");
   async function _preCreateActiveEffect(this: ActiveEffect, wrapped, data, context, user) {
     // Migrate deprecated flags.dae.showIcon to native showIcon field
@@ -2206,6 +2216,19 @@ function scheduleConditionalEffects(actor: Actor.Implementation, updates: TokenD
       console.warn("dae | Error processing conditional effects:", err);
     }
   });
+}
+
+/**
+ * Schedule conditional effect processing for every combatant in a combat encounter.
+ * This re-evaluates enable/disable conditions when combat starts, when the turn or
+ * round changes and when combat ends.
+ */
+function scheduleCombatConditionalEffects(combat: Combat.Implementation) {
+  if (game.user !== game.users?.activeGM) return;
+  for (let combatant of combat.combatants) {
+    const actor = combatant.actor;
+    if (actor) scheduleConditionalEffects(actor, {});
+  }
 }
 
 function updateStatusEffects(doc, options, userId) {
