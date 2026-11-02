@@ -564,11 +564,12 @@ macro.actorUpdate allows you to update a field on the actor and (optionally) hav
 * **expression**: a roll expression, string, or boolean e.g. "@attributes.dex.mod * 2 + 10" (**must** be in "" marks), the expression can start with one of +-*/ and will treated as a (actor current value + value) etc.
 * **targetField**: "string", e.g. system.attrbutes.hp.temp
 * **optional undo action** values:
-  - missing/true/restore -> restore original value of target field on expiry
-  - remove -> subtract the change made to the current value of the field on expiry, i.e. undo the change allowing for changes from other sources.
+  - missing/`true`/`restore` -> restore original value of target field on expiry
+  - `remove` -> subtract the change made to the current value of the field on expiry, i.e. undo the change allowing for changes from other sources.
   - **+-*/value** add/subtract etc value to the current value of the target field
   - **value** set the target field to the value on expiry.
   - The "value" can be a roll expression, which should be enclosed in quotes. The string "undefined" will set the target field to undefined on expiry, useful for some traits etc.
+  - `"actorValue"` will set the value to the current value at the time of effect deletion
 
 **macro.tokenMagic "filterName"**
 Will apply the specified Token Magic filter to each targeted actor when the active effect is applied to the actor and removed when the effect is deleted.
