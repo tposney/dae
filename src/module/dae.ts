@@ -2132,6 +2132,7 @@ export function daeInitActions() {
   Hooks.on("updateItem", (item, data, options, userId) => updateStatusEffects(item, options, userId));
   Hooks.on("deleteItem", (item, options, userId) => updateStatusEffects(item, options, userId));
   Hooks.on("createItem", (item, options, userId) => updateStatusEffects(item, options, userId));
+  Hooks.on("createActor", (actor, options, userId) => updateStatusEffects(actor, options, userId));
 
   Hooks.on("deleteActiveEffect", deleteActiveEffectHook);
   //  Hooks.on("preDeleteActiveEffect", preDeleteActiveEffectHook); - moved wrapper to avoid race conditions
@@ -2182,8 +2183,9 @@ export function daeInitActions() {
   actionQueue = new foundry.utils.Semaphore();
 }
 
+// Not compendium actors: their conditions would race importers replacing their effects, and a world copy gets its own on createActor
 function scheduleReconciliation(actor: Actor.Implementation) {
-  if (!dependentConditions || reconciliationPending.has(actor.uuid)) return;
+  if (!dependentConditions || actor.inCompendium || reconciliationPending.has(actor.uuid)) return;
   reconciliationPending.add(actor.uuid);
   actionQueue.add(async () => {
     try {

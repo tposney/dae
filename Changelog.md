@@ -1,3 +1,6 @@
+### 14.0.23
+* Fixed: with Dependent Conditions on, updating an existing compendium monster in ddb-importer could stop with "ActiveEffect dnd5einvisible00 does not exist" (compendium actors no longer get dependent conditions; an actor created in the world gets them).
+
 ### 14.0.22
 
 * Changed: DAE has moved to GitHub (https://github.com/tposney/dae): updates and downloads come from its releases, and issues are reported there. Installed copies move over with this update.
