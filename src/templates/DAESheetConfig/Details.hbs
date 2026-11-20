@@ -47,7 +47,11 @@
         {{/if}}
         <div class="form-group">
             <label>{{ localize "dae.ShowIcon.Name" }}</label>
-            <input type="checkbox" name="flags.dae.showIcon" {{ checked source.flags.dae.showIcon }} />
+            <div class="repeat form-fields">
+                <select name="flags.dae.showIcon" data-dtype="String">
+                    {{ selectOptions showIconOptions selected=source.flags.dae.showIcon }}
+                </select>
+            </div>
             <p class="hint" style="margin-bottom:1em">
                 {{ localize "dae.ShowIcon.Hint" }}
             </p>

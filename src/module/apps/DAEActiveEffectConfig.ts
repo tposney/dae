@@ -302,6 +302,13 @@ export class DAEActiveEffectConfig extends foundry.applications.sheets.ActiveEff
     context.specialDuration = daeSpecialDurations;
     context.showSpecialDurations = Object.keys(daeSpecialDurations)?.length > 1;
     context.macroRepeats = daeMacroRepeats;
+    if (document.flags?.dae?.showIcon === true) await document.update({ flags: { dae: {showIcon: "always" } } });
+    else if (document.flags?.dae?.showIcon === false) await document.update({ flags: { dae: { showIcon: "none" } } });
+    context.showIconOptions = {
+      "none": i18n("dae.ShowIcon.Options.Default"),
+      "always": i18n("dae.ShowIcon.Options.Always"),
+      "never": i18n("dae.ShowIcon.Options.Never")
+    };
     context.stackableOptions = stackableOptions;
 
     if (document.parent) {
