@@ -10,6 +10,7 @@ import { ValidSpec, wildcardEffects } from '../Systems/DAESystem.js';
 import { enumerateBaseValues } from '../dae.js';
 
 const API = {
+  supportsActivityEffectData: true,
   ActiveEffects(document: Actor.Implementation | Item.Implementation) {
     return new ActiveEffects({document});
   },

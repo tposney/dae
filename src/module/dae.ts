@@ -1561,17 +1561,25 @@ export async function doEffects(
   return await applyNonTransferEffects(item, activate, targets, options)
 }
 
+/**
+ * Apply activity effects resolved from UUIDs or supplied as pre-built sources.
+ * Supplied sources are cloned before DAE evaluates and applies them.
+ */
 export async function doActivityEffects(
   activity,
   activate: boolean,
   targets: DoEffectsTargets = undefined,
-  activityEffectsUuids: string[],
+  activityEffects: (string | ActiveEffect.Source)[],
   options: DoEffectsOptions
 ) {
-  const activityEffects = (activityEffectsUuids.map(aeUuid => fromUuidSync(aeUuid) ?? activity.effects.find(ae => ae.effect.uuid === aeUuid)?.effect) as ActiveEffect.Implementation[]).filter(ef => ef).map(ef => ef.toObject());
+  const activityEffectData = activityEffects.flatMap(effect => {
+    if (typeof effect !== "string") return [foundry.utils.deepClone(effect)];
+    const effectDocument = fromUuidSync(effect) ?? activity.effects.find(ae => ae.effect.uuid === effect)?.effect;
+    return effectDocument instanceof ActiveEffect ? [effectDocument.toObject()] : [];
+  });
   // TODO dnd5e v4 - a temporary fix to make sure the effects are not disabled when applied
-  activityEffects.forEach(ef => ef.disabled = false);
-  return await applyActivityEffects(activity, activate, targets, activityEffects, options)
+  activityEffectData.forEach(ef => ef.disabled = false);
+  return await applyActivityEffects(activity, activate, targets, activityEffectData, options)
 }
 
 export async function applyActivityEffects(
