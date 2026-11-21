@@ -2607,7 +2607,7 @@ async function reconcileActorStatuses(actor: Actor.Implementation) {
   const autoCreatedConditions = new Map<string, ActiveEffect.Implementation>();
 
   for (let effect of actor.allApplicableEffects()) {
-    if (effect.flags?.["dfreds-convenient-effects"]) continue;
+    if (effect.flags?.["dfreds-convenient-effects"] || effect.flags?.["dfreds-status-effects"]) continue;
     // Check if this effect has a static _id matching a CONFIG status effect.
     // These are status effect documents (created by toggleStatusEffect, fromStatusEffect,
     // or by this reconciliation). They are the OUTPUT of reconciliation, not input.
